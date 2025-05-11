@@ -1,6 +1,9 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 
+/// <summary>
+/// The applications main entry point
+/// </summary>
 public class Program
 {
     public static async Task Main(string[] args)
@@ -25,6 +28,9 @@ public class Program
         await udpListener.StartServer(cts.Token);
     }
 
+    /// <summary>
+    /// A temporary method for tesing the event subscription.
+    /// </summary>
     public static void OnUDPMessage(object? pSender, UdpReceiveResult pUDPResult) {
         Console.WriteLine(Encoding.UTF8.GetString(pUDPResult.Buffer));
     }
