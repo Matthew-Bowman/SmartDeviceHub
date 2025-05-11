@@ -1,53 +1,73 @@
 ﻿using System.Net.Sockets;
-using System.Text;
+
+/// <summary>
+/// Listens for incoming UDP packets on a specified port and raises an event when a packet is received.
+/// This class abstracts the handling of UDP communication and allows subscribers to react to received packets.
+/// </summary>
 
 public class UDPListener
 {
-    // Member Variables
+    // =====================================
+    // ** FIELDS **
+    // =====================================
+
     private int _port;
     private UdpClient? _udpClient;
 
-    // Events
+    // =====================================
+    // ** EVENTS **
+    // =====================================
     public event EventHandler<UdpReceiveResult>? PacketReceived;
 
-    // Constructors
+    // =====================================
+    // ** CONSTRUCTORS **
+    // =====================================
+
+    /// <summary>
+    /// Creates a new UDP listener bound to the specified port.
+    /// </summary>
     public UDPListener(int pPort)
     {
-        // Member Variable Assigning
         this._port = pPort;
     }
 
-    // Private Methods
+    // =========================================
+    // ** PRIVATE METHODS **
+    // =========================================
+
+    /// <summary>
+    /// Raises the PacketReceived event.
+    /// </summary>
     protected virtual void OnPacketReceived(UdpReceiveResult pResult)
     {
         PacketReceived?.Invoke(this, pResult);  // Trigger the event
     }
 
-    // Public Methods
+    // ==========================================
+    // ** PUBLIC METHODS **
+    // ==========================================
+
+    /// <summary>
+    /// Starts listening for UDP packets until the operation is canceled.
+    /// </summary>
     public async Task StartServer(CancellationToken pCancellationToken)
     {
-        // Start UDP Client
         this._udpClient = new UdpClient(this._port);
 
-        // Listen For Packet
         while (!pCancellationToken.IsCancellationRequested) {
 
             try
             {
-
                 UdpReceiveResult result = await this._udpClient.ReceiveAsync();
                 OnPacketReceived(result);
-
             }
             catch (Exception pException) {
-
                 Console.WriteLine($"[UDPListener] Error: {pException.Message}");
 
             }
 
         }
 
-        // Close UDP Client
         this._udpClient.Close();
     }
 }
