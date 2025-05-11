@@ -10,6 +10,7 @@ public class Program
     {
         // Declare Variables
         CancellationTokenSource cts = new CancellationTokenSource();
+        List<Task> tasks = new List<Task>();
         int udpPort = 5000;
 
 
@@ -21,11 +22,13 @@ public class Program
 
         // Subscribe Events
         udpListener.PacketReceived += OnUDPMessage;
-        
-        
-        
+
+
+
         // Start Systems
-        await udpListener.StartServer(cts.Token);
+        tasks.Add(Task.Run(() => udpListener.StartServer(cts.Token)));
+
+        await Task.WhenAll(tasks);
     }
 
     /// <summary>
