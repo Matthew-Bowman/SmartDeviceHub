@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace SmartDeviceHub.UDPListener
+namespace SmartDeviceHub.UDP
 {
 
     /// <summary>

@@ -10,6 +10,9 @@ namespace SmartDeviceHub
     /// </summary>
     public class Program
     {
+        // ==========================================
+        // ** PROGRAM ENTRY **
+        // ==========================================
         public static async Task Main()
         {
             // Declare Variables
@@ -25,22 +28,40 @@ namespace SmartDeviceHub
 
 
             // Subscribe Events
-            udpListener.PacketReceived += OnUDPMessage;
+            /// None yet (TBD After MessageHandler Completion)
 
 
 
             // Start Systems
-            tasks.Add(Task.Run(() => udpListener.StartServer(cts.Token)));
+            tasks.Add(StartUDPListenerAsync(udpListener, cts));
+
+
 
             await Task.WhenAll(tasks);
         }
 
-        /// <summary>
-        /// A temporary method for tesing the event subscription.
-        /// </summary>
-        public static void OnUDPMessage(object? pSender, UdpReceiveResult pUDPResult)
+        // ==========================================
+        // ** HELPER FUNCTIONS **
+        // ==========================================
+
+        // Begins the UDP listening task
+        private static Task StartUDPListenerAsync(UDPListener pUDPListener, CancellationTokenSource pCTS)
         {
-            Console.WriteLine(Encoding.UTF8.GetString(pUDPResult.Buffer));
+            return Task.Run(async () =>
+            {
+                try
+                {
+                    await pUDPListener.StartServer(pCTS.Token);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[StartUDPListenerAsync] Error: {ex.Message}");
+                }
+                finally
+                {
+                    pUDPListener.Dispose();
+                }
+            });
         }
     }
 }
