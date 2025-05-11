@@ -11,7 +11,7 @@ namespace SmartDeviceHub.UDPListener
     /// Creates a new UDP listener bound to the specified port.
     /// </remarks>
 
-    public class UDPListener(int pPort)
+    public class UDPListener(int pPort) : IDisposable
     {
         // =====================================
         // ** FIELDS **
@@ -29,12 +29,19 @@ namespace SmartDeviceHub.UDPListener
         // ** PRIVATE METHODS **
         // =========================================
 
-        /// <summary>
         /// Raises the PacketReceived event.
-        /// </summary>
         protected virtual void OnPacketReceived(UdpReceiveResult pResult)
         {
             PacketReceived?.Invoke(this, pResult);  // Trigger the event
+        }
+
+        // Protected implementation of Dispose to clean up unmanaged resources
+        protected virtual void Dispose(bool pDisposing)
+        {
+            if (pDisposing)
+            {
+                _udpClient?.Dispose();
+            }
         }
 
         // ==========================================
@@ -67,9 +74,13 @@ namespace SmartDeviceHub.UDPListener
             _udpClient.Close();
         }
 
+        /// <summary>
+        /// Disposes of the UDPListener, releasing any resources.
+        /// </summary>
         public void Dispose()
         {
-            throw new NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

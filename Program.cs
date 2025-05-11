@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using SmartDeviceHub.UDP;
 
 namespace SmartDeviceHub
 {
@@ -12,14 +13,14 @@ namespace SmartDeviceHub
         public static async Task Main()
         {
             // Declare Variables
-            CancellationTokenSource cts = new CancellationTokenSource();
-            List<Task> tasks = new List<Task>();
+            CancellationTokenSource cts = new();
+            List<Task> tasks = [];
             int udpPort = 5000;
 
 
 
             // Initialize components
-            var udpListener = new UDPListener(udpPort);
+            UDPListener udpListener = new(udpPort);
 
 
 
