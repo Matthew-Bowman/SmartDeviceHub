@@ -4,32 +4,23 @@
 /// Listens for incoming UDP packets on a specified port and raises an event when a packet is received.
 /// This class abstracts the handling of UDP communication and allows subscribers to react to received packets.
 /// </summary>
+/// <remarks>
+/// Creates a new UDP listener bound to the specified port.
+/// </remarks>
 
-public class UDPListener
+public class UDPListener(int pPort)
 {
     // =====================================
     // ** FIELDS **
     // =====================================
 
-    private int _port;
+    private readonly int _port = pPort;
     private UdpClient? _udpClient;
 
     // =====================================
     // ** EVENTS **
     // =====================================
     public event EventHandler<UdpReceiveResult>? PacketReceived;
-
-    // =====================================
-    // ** CONSTRUCTORS **
-    // =====================================
-
-    /// <summary>
-    /// Creates a new UDP listener bound to the specified port.
-    /// </summary>
-    public UDPListener(int pPort)
-    {
-        this._port = pPort;
-    }
 
     // =========================================
     // ** PRIVATE METHODS **
@@ -58,7 +49,7 @@ public class UDPListener
 
             try
             {
-                UdpReceiveResult result = await this._udpClient.ReceiveAsync();
+                UdpReceiveResult result = await this._udpClient.ReceiveAsync(pCancellationToken);
                 OnPacketReceived(result);
             }
             catch (Exception pException) {
